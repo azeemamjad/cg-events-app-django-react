@@ -1,10 +1,17 @@
 from pathlib import Path
+from datetime import timezone
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+from django.conf.global_settings import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-0un-eq2gm)3%2(-ejmrng$ew#9(#(5g9givbk5x223v=nhaknm'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 INSTALLED_APPS = [
@@ -96,3 +103,24 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user_app.AppUser'
+
+# CELERY CONF
+CELERY_TIMEZONE = timezone.utc
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv("EMAIL_ADDRESS")
+EMAIL_HOST_PASSWORD = os.getenv('APP_PASSWORD')
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+# APP_PASSWORD=dbzd rvji qcib pzpt
+# EMAIL_ADDRESS=codegraphersevents@gmail.com

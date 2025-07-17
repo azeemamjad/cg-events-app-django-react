@@ -15,6 +15,6 @@ class AppUser(AbstractUser):
     )
     # for verification purposes
     verified = models.BooleanField(default=False)
-    otp = models.IntegerField(max_length=6, default=False)
+    otp = models.CharField(max_length=6, default=False)
 
 

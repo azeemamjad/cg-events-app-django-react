@@ -1,0 +1,26 @@
+# Django and DRF
+Django>=4.2
+djangorestframework-simplejwt>=5.5.0
+drf-yasg  # for API documentation (Swagger)
+
+# MySQL DB adapter
+pymysql~=1.1.1
+
+# Celery and Redis
+celery>=5.3
+redis>=5.0
+
+# Optional - Useful Django tools
+django-cors-headers>=4.3  # if you're building an API for frontend
+python-dotenv>=1.0  # for loading environment variables
+django-environ>=0.11  # alternative to python-dotenv
+
+# For background periodic tasks (optional)
+django-celery-beat>=2.5
+django-celery-results>=2.5
+
+Pillow
+
+djangorestframework~=3.16.0
+
+celery

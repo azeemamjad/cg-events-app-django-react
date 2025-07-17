@@ -4,10 +4,16 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import AppUserRegisterSerializer, AppUserVerifySerializer
 
+from .tasks import sleepy, send_email
+
 @api_view(['GET'])
 def home(request):
     return Response(data={'message': 'Server is running!'}, status=200)
 
+@api_view(['GET'])
+def index(request):
+    send_email.delay()
+    return Response(data={"message": "Email Has Been Sent!"}, status=status.HTTP_200_OK)
 
 class AppUserRegisterView(APIView):
     serializer_class = AppUserRegisterSerializer

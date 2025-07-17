@@ -21,6 +21,6 @@ class AppUserRegisterSerializer(serializers.ModelSerializer):
 
 class AppUserVerifySerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    otp = serializers.IntegerField(required=False)
+    otp = serializers.CharField(required=False)
     class Meta:
         fields = ['email', 'otp']

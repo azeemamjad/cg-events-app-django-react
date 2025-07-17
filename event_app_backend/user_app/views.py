@@ -3,8 +3,11 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import AppUserRegisterSerializer, AppUserVerifySerializer
+from .models import AppUser
+from django.shortcuts import get_object_or_404
+import random
 
-from .tasks import sleepy, send_email
+from .tasks import send_email
 
 @api_view(['GET'])
 def home(request):
@@ -28,4 +31,23 @@ class AppUserRegisterView(APIView):
 class AppUserVerifyView(APIView):
     serializer_class = AppUserVerifySerializer
     def post(self, request, *args, **kwargs):
-        ...
+        serializer = AppUserVerifySerializer(data=request.data)
+        if serializer.is_valid():
+            if serializer.data.get('otp', ''):
+                otp = serializer.data.get('otp')
+                user = get_object_or_404(AppUser, email=serializer.data.get("email"))
+                if user.otp == otp:
+                    user.verified = True
+                    user.otp = ''
+                    user.save()
+                else:
+                    return Response({"message": "Your OTP is Incorrect!"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                otp = [str(random.choice([i for i in range(0, 10)])) for i in range(6)]
+                otp = "".join(otp)
+                email = serializer.data.get("email")
+                user = get_object_or_404(AppUser, email=email)
+                user.otp = otp
+                user.save()
+                return Response({"message": f"OTP sent Successfully! to {email}"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

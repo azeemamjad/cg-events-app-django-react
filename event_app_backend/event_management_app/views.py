@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permissions import IsOwnerOfHall
@@ -9,6 +10,7 @@ from .models import Hall
 from django.shortcuts import get_object_or_404
 
 from .serializers import HallSerializer, HallRetrieveSerializer
+
 # Create your views here.
 @api_view(['GET'])
 def index(request):
@@ -66,3 +68,13 @@ class HallDestroyView(APIView):
         self.check_object_permissions(request, hall)
         hall.delete()
         return Response({"message": "Hall Deleted Successfully!"}, status=status.HTTP_200_OK)
+
+class HallViewSet(ModelViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsOwnerOfHall]
+    queryset = Hall.objects.all()
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return HallRetrieveSerializer
+        else:
+            return HallSerializer

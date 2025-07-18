@@ -24,7 +24,8 @@ from .views import CustomTokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('user_app.urls')),
+    path('api/user/', include('user_app.urls')),
+    path('api/event/', include('event_management_app.urls')),
     path('login/', CustomTokenObtainPairView.as_view()),
     path('refresh/', TokenRefreshView.as_view()),
     path('token_health/', TokenVerifyView.as_view()),

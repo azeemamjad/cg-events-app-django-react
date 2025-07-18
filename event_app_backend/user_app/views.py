@@ -60,7 +60,7 @@ class AppUserVerifyView(APIView):
                 email = serializer.data.get("email")
                 user = get_object_or_404(AppUser, email=email)
                 user.otp = otp
-                send_otp_email.delay(otp=otp, email=email, link=f"http://{request.get_host()}/verify/?email={email}&otp={otp}")
+                send_otp_email.delay(otp=otp, email=email, link=f"http://{request.get_host()}/api/user/verify/?email={email}&otp={otp}")
                 user.save()
                 return Response({"message": f"OTP sent Successfully! to {email}"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

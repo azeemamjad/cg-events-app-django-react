@@ -16,6 +16,8 @@ class Hall(models.Model):
     name = models.CharField(max_length=100)
     location = models.TextField()
     capacity = models.PositiveIntegerField(null=True, blank=True)
+    verified = models.BooleanField(default=False)
+    owner = models.ForeignKey(AppUser, related_name='halls', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name

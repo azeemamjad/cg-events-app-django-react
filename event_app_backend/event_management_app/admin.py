@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Hall, Event, EventImage
 
 class HallAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'location', 'capacity']
+    list_display = ['id', 'name', 'location', 'capacity', 'verified', 'owner']
     list_display_links = ['id', 'name']
 
 class EventAdmin(admin.ModelAdmin):

@@ -130,3 +130,6 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
     "AUTH_HEADER_TYPES": ("Bearer",)
 }
+
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'

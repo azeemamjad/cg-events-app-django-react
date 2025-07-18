@@ -1,11 +1,14 @@
+from django.core.serializers import serialize
 from rest_framework.views import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
-from .serializers import AppUserRegisterSerializer, AppUserVerifySerializer
+from .serializers import AppUserRegisterSerializer, AppUserVerifySerializer, AppUserSerializer, AppUserUpdateSerializer
 from .models import AppUser
 from django.shortcuts import get_object_or_404
 import random
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 from .tasks import send_otp_email
 
@@ -17,6 +20,14 @@ def home(request):
 # def index(request):
 #     send_otp_email.delay()
 #     return Response(data={"message": "Email Has Been Sent!"}, status=status.HTTP_200_OK)
+
+class AppUserGetView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        serializer = AppUserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AppUserRegisterView(APIView):
     serializer_class = AppUserRegisterSerializer
@@ -68,3 +79,13 @@ class AppUserVerifyView(APIView):
         else:
             return Response({"message": "Email and Otp not found!"}, status=status.HTTP_400_BAD_REQUEST)
 
+class AppUserUpdateView(APIView):
+    serializer_class = AppUserUpdateSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def put(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.update(request.user, request.data)
+            return Response({"detail": "User updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

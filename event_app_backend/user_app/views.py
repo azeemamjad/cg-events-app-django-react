@@ -7,16 +7,16 @@ from .models import AppUser
 from django.shortcuts import get_object_or_404
 import random
 
-from .tasks import send_email
+from .tasks import send_otp_email
 
 @api_view(['GET'])
 def home(request):
     return Response(data={'message': 'Server is running!'}, status=200)
 
-@api_view(['GET'])
-def index(request):
-    send_email.delay()
-    return Response(data={"message": "Email Has Been Sent!"}, status=status.HTTP_200_OK)
+# @api_view(['GET'])
+# def index(request):
+#     send_otp_email.delay()
+#     return Response(data={"message": "Email Has Been Sent!"}, status=status.HTTP_200_OK)
 
 class AppUserRegisterView(APIView):
     serializer_class = AppUserRegisterSerializer
@@ -40,6 +40,7 @@ class AppUserVerifyView(APIView):
                     user.verified = True
                     user.otp = ''
                     user.save()
+                    return Response({"message": "Verified Successfully!"}, status=status.HTTP_200_OK)
                 else:
                     return Response({"message": "Your OTP is Incorrect!"}, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -48,6 +49,22 @@ class AppUserVerifyView(APIView):
                 email = serializer.data.get("email")
                 user = get_object_or_404(AppUser, email=email)
                 user.otp = otp
+                send_otp_email.delay(otp=otp, email=email, link=f"http://{request.get_host()}/verify/?email={email}&otp={otp}")
                 user.save()
                 return Response({"message": f"OTP sent Successfully! to {email}"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('email') and request.GET.get('otp'):
+            otp = request.GET.get('otp')
+            user = get_object_or_404(AppUser, email=request.GET.get('email'))
+            if user.otp == otp:
+                user.verified = True
+                user.otp = ''
+                user.save()
+                return Response({"message": "Verified Successfully!"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "Your OTP is Incorrect!"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message": "Email and Otp not found!"}, status=status.HTTP_400_BAD_REQUEST)
+

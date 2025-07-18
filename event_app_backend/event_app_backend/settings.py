@@ -121,6 +121,3 @@ EMAIL_HOST_USER = os.getenv("EMAIL_ADDRESS")
 EMAIL_HOST_PASSWORD = os.getenv('APP_PASSWORD')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-
-# APP_PASSWORD=dbzd rvji qcib pzpt
-# EMAIL_ADDRESS=codegraphersevents@gmail.com

@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     # Third Party
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
     'corsheaders',
     # My Apps
     'user_app',
@@ -134,3 +135,11 @@ SIMPLE_JWT = {
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
+
+REST_FRAMEWORK = {
+    # Django Pagination
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    # Django Filters
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}

@@ -1,3 +1,4 @@
+from django.template.context_processors import request
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -7,12 +8,15 @@ from django.utils import timezone
 from .permissions import IsOwnerOfHall, IsOwnerOfEvent
 from .models import Hall, Event
 from user_app.models import AppUser
-from .serializers import HallSerializer, HallRetrieveSerializer, EventSerializer, EventRetrieveSerializer
+from .serializers import HallSerializer, HallRetrieveSerializer, EventSerializer, EventRetrieveSerializer, EventListSerializer
+
+from .filters import EventFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 class HallViewSet(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOfHall]
-    queryset = Hall.objects.all()
+    queryset = Hall.objects.all().order_by('-id')
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -26,16 +30,22 @@ class HallViewSet(ModelViewSet):
         serializer.save()
 
 
-# views.py
 class EventViewSet(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOfEvent]
     queryset = Event.objects.all().prefetch_related('organizers', 'attendees', 'images')
+    filterset_class = EventFilter
+    filter_backends = [DjangoFilterBackend,]
 
     def get_serializer_class(self):
+        if self.action == 'list':
+            return EventListSerializer
         if self.request.method == 'GET':
             return EventRetrieveSerializer
         return EventSerializer
+
+    def get_queryset(self):
+        return Event.objects.all().prefetch_related('organizers', 'attendees', 'images')
 
     def perform_create(self, serializer):
         organizer_list = [self.request.user]

@@ -25,13 +25,6 @@ class EventImageSerializer(serializers.ModelSerializer):
         model = EventImage
         fields = ['id', 'title', 'image']
 
-
-class AppUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AppUser
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'date_joined', 'profile_picture', 'verified', 'role']
-
-
 class EventSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
@@ -41,7 +34,12 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'created_at', 'updated_at', 'organizers', 'attendees']
+        fields = ['id', 'title', 'description', 'entry_fee', 'genre', 'start_time', 'end_time', 'created_at', 'updated_at', 'organizers', 'attendees']
+
+class EventListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =Event
+        fields = ['id', 'title', 'description', 'entry_fee', 'genre', 'start_time', 'end_time', 'created_at', 'updated_at']
 
 class EventRetrieveSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -53,4 +51,4 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'start_time', 'end_time', 'created_at', 'updated_at', 'organizers', 'attendees', 'images']
+        fields = ['id', 'title', 'description', 'entry_fee', 'genre', 'start_time', 'end_time', 'created_at', 'updated_at', 'organizers', 'attendees', 'images']

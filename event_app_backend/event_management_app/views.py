@@ -8,7 +8,7 @@ from django.utils import timezone
 from .permissions import IsOwnerOfHall, IsOwnerOfEvent
 from .models import Hall, Event
 from user_app.models import AppUser
-from .serializers import HallSerializer, HallRetrieveSerializer, EventSerializer, EventRetrieveSerializer, EventListSerializer
+from .serializers import HallSerializer, HallRetrieveSerializer, HallListSerializer, EventSerializer, EventRetrieveSerializer, EventListSerializer
 
 from .filters import EventFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -19,7 +19,9 @@ class HallViewSet(ModelViewSet):
     queryset = Hall.objects.all().order_by('-id')
 
     def get_serializer_class(self):
-        if self.request.method == 'GET':
+        if self.action == 'list':
+            return HallListSerializer
+        elif self.request.method == 'GET':
             return HallRetrieveSerializer
         return HallSerializer
 
@@ -40,7 +42,7 @@ class EventViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return EventListSerializer
-        if self.request.method == 'GET':
+        elif self.request.method == 'GET':
             return EventRetrieveSerializer
         return EventSerializer
 

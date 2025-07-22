@@ -43,12 +43,6 @@ class Event(models.Model):
         related_name='organized_events'
     )
 
-    attendees = models.ManyToManyField(
-        AppUser,
-        related_name='attended_events',
-        blank=True  # optional attendees
-    )
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

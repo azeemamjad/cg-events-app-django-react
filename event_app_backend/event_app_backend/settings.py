@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'corsheaders',
     # My Apps
     'user_app',
-    'event_management_app'
+    'event_management_app',
+    'booking'
 
 ]
 

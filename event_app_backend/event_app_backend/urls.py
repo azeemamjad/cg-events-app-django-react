@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('user_app.urls')),
     path('api/', include('event_management_app.urls')),
+    path('api/', include('booking.urls')),
     path('login/', CustomTokenObtainPairView.as_view()),
     path('refresh/', TokenRefreshView.as_view()),
     path('token_health/', TokenVerifyView.as_view()),

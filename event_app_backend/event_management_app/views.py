@@ -16,7 +16,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 class HallViewSet(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOfHall]
-    queryset = Hall.objects.all().order_by('-id')
+    queryset = Hall.objects.all()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -35,7 +35,7 @@ class HallViewSet(ModelViewSet):
 class EventViewSet(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOfEvent]
-    queryset = Event.objects.all().prefetch_related('organizers', 'attendees', 'images')
+    queryset = Event.objects.all().prefetch_related('organizers', 'bookings', 'images')
     filterset_class = EventFilter
     filter_backends = [DjangoFilterBackend,]
 
@@ -47,7 +47,7 @@ class EventViewSet(ModelViewSet):
         return EventSerializer
 
     def get_queryset(self):
-        return Event.objects.all().prefetch_related('organizers', 'attendees', 'images')
+        return Event.objects.all().prefetch_related('organizers', 'bookings', 'images')
 
     def perform_create(self, serializer):
         organizer_list = [self.request.user]

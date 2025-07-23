@@ -30,6 +30,7 @@ class Event(models.Model):
     end_time = models.DateTimeField(default=default_end_time)
     entry_fee = models.FloatField(null=False)
     genre = models.CharField(max_length=50)
+    past_event = models.BooleanField(default=False)
 
     hall = models.ForeignKey(
         Hall,

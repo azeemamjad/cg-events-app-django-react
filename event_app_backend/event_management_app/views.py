@@ -35,7 +35,7 @@ class HallViewSet(ModelViewSet):
 class EventViewSet(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOfEvent]
-    queryset = Event.objects.all().prefetch_related('organizers', 'bookings', 'images')
+    queryset = Event.objects.all().prefetch_related('organizers', 'bookings', 'images').filter(past_event=False)
     filterset_class = EventFilter
     filter_backends = [DjangoFilterBackend,]
 

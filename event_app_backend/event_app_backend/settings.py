@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third Party
+    'django_celery_beat',
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
@@ -30,7 +31,8 @@ INSTALLED_APPS = [
     'user_app',
     'event_management_app',
     'booking',
-    'reviews'
+    'reviews',
+    'past_events_markup'
 ]
 
 MIDDLEWARE = [

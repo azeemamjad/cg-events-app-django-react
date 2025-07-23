@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'user_app',
     'event_management_app',
     'booking',
-    'reviews'
+    'reviews',
+    'recommendation_system'
 ]
 
 MIDDLEWARE = [

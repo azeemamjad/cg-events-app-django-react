@@ -10,11 +10,10 @@ from .models import Booking
 
 
 @shared_task
-def create_booking_task(event_id, user_id, seat_no):
+def create_booking_task(event_id, user_id, booking_id):
     event = Event.objects.get(id=event_id)
     user = AppUser.objects.get(id=user_id)
-    booking = Booking.objects.create(event=event, user=user, seat_no=seat_no)
-    booking.save()
+    booking = Booking.objects.get(id=booking_id)
     send_confirmation_mail(booking_id=booking.id, seat_no=booking.seat_no,
                            event_id=event_id, event_name=event.title, event_genre=event.genre,
                            hall_id=event.hall.id, hall_location=event.hall.location, hall_name=event.hall.name, email=user.email)

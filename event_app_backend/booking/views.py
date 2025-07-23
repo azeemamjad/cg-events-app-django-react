@@ -1,9 +1,12 @@
+from django.shortcuts import get_object_or_404
 from django.template.context_processors import request
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from event_management_app.models import Event
 from .permissions import IsOwnerOfBooking
 
 from .models import Booking
@@ -41,4 +44,7 @@ class BookingViewSet(ModelViewSet):
         user = self.request.user
         event_id = validated_data['event'].id
         seat_no = validated_data['seat_no']
-        create_booking_task.delay(event_id, user.id,seat_no)
+        event = get_object_or_404(Event, id=event_id)
+        booking = Booking.objects.create(event=event, user=user, seat_no=seat_no)
+        booking.save()
+        create_booking_task.delay(event_id, user.id, booking.id)

@@ -29,8 +29,8 @@ INSTALLED_APPS = [
     # My Apps
     'user_app',
     'event_management_app',
-    'booking'
-
+    'booking',
+    'reviews'
 ]
 
 MIDDLEWARE = [

@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/', include('booking.urls')),
     path('api/', include('reviews.urls')),
     path('api/', include('recommendation_system.urls')),
+    path('api/', include('past_events_markup.urls')),
     path('login/', CustomTokenObtainPairView.as_view()),
     path('refresh/', TokenRefreshView.as_view()),
     path('token_health/', TokenVerifyView.as_view()),

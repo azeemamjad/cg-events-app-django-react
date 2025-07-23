@@ -22,6 +22,7 @@ class BookingSerializer(serializers.ModelSerializer):
             except Event.DoesNotExist:
                 raise ValidationError("Invalid event.")
         if event.bookings.filter(seat_no=value).exclude(id=self.instance.id if self.instance else None).exists():
+            [print(i.id) for i in event.bookings.filter(seat_no=value).exclude(id=self.instance.id if self.instance else None)]
             raise ValidationError("Seat number is already taken!")
         try:
             numeric_seat = int(value)

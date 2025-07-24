@@ -54,7 +54,7 @@ class EventViewSet(ModelViewSet):
         return EventSerializer
 
     def get_queryset(self):
-        return Event.objects.filter(past_event=False).prefetch_related('organizers', 'bookings', 'images')
+        return Event.objects.filter(past_event=False).prefetch_related('organizers', 'bookings', 'images').order_by('-id')
 
     def _get_cache_key(self, request=None):
         """Generate cache key based on filters and query parameters"""
@@ -133,13 +133,13 @@ class EventViewSet(ModelViewSet):
     def perform_create(self, serializer):
         """Override to clear cache after creation"""
         organizer_list = [self.request.user]
-        user_ids = self.request.data.get("users", [])
+        user_ids = self.request.data.get("organizers", [])
         if user_ids:
             additional_users = AppUser.objects.filter(id__in=user_ids)
             organizer_list.extend(additional_users)
 
-        serializer.instance.organizers.set(organizer_list)
         serializer.save()
+        serializer.instance.organizers.set(organizer_list)
 
         # Invalidate cache after creation
         self._invalidate_cache()

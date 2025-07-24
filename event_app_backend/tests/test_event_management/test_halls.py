@@ -76,3 +76,4 @@ def test_patch_hall_without_token(client, hall, token):
     assert response.json()['name'] == 'Mall 13'
     assert response.json()['capacity'] == hall.capacity
     assert response.status_code == status.HTTP_200_OK
+

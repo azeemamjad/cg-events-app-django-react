@@ -54,10 +54,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ['id', 'title', 'description', 'entry_fee', 'genre', 'hall', 'start_time', 'end_time', 'created_at', 'updated_at']
-        extra_kwargs = {
-            'start_time': {'required': True},
-            'end_time': {'required': True}
-        }
+
     def validate_hall(self, hall):
         start_time_str = self.initial_data.get("start_time")
         end_time_str = self.initial_data.get("end_time")

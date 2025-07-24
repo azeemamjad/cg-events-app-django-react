@@ -44,7 +44,7 @@ class EventViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOfEvent]
     queryset = Event.objects.filter(past_event=False).prefetch_related('organizers', 'bookings', 'images')
     filterset_class = EventFilter
-    filter_backends = [DjangoFilterBackend, ]
+    filter_backends = [DjangoFilterBackend]
 
     def get_serializer_class(self):
         if self.action == 'list':

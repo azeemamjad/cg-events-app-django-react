@@ -18,7 +18,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 class HallViewSet(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOfHall]
-    queryset = Hall.objects.all()
+    queryset = Hall.objects.all().order_by('-id')
 
     def get_serializer_class(self):
         if self.action == 'list':

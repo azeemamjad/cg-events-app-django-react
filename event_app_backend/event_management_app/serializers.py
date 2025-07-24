@@ -11,10 +11,12 @@ from .models import Hall, Event, EventImage
 from user_app.serializers import AppUserSerializer
 from user_app.models import AppUser
 
+from booking.models import Booking
+
 class HallSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     verified = serializers.BooleanField(read_only=True)
-    owner = serializers.PrimaryKeyRelatedField(queryset=AppUser.objects.all(),required=True)
+    owner = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
     class Meta:
         model = Hall
         fields = ['id', 'name', 'location', 'capacity', 'verified', 'owner']
@@ -78,10 +80,15 @@ class EventSerializer(serializers.ModelSerializer):
         return hall
 
 class EventListSerializer(serializers.ModelSerializer):
+    remaining_bookings = serializers.SerializerMethodField()
     class Meta:
         model =Event
-        fields = ['id', 'title', 'description', 'entry_fee', 'genre','hall', 'start_time', 'end_time', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'description', 'entry_fee', 'genre', 'remaining_bookings','hall', 'start_time', 'end_time', 'created_at', 'updated_at']
 
+    def get_remaining_bookings(self, obj):
+        count = obj.bookings.count()
+        remaining = obj.hall.capacity - count
+        return remaining
 
 class AppUserInlineSerializer(serializers.Serializer):
     id = serializers.IntegerField()

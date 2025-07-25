@@ -6,6 +6,11 @@ from user_app.models import AppUser
 
 from event_management_app.models import Hall
 from event_management_app.models import Event
+from django.core.cache import cache
+
+@pytest.fixture(autouse=True) # For Testing Throttling, and it would not impact on the other test case, cause the throttling info is stored in in-memory ( redux, in-memory:sqlite)
+def clear_throttle_cache():
+    cache.clear()
 
 # Global
 @pytest.fixture
@@ -17,6 +22,7 @@ def client():
 def user():
     user = AppUser.objects.create(
         username='admin',
+        email='admin@gmail.com',
         is_active=True,
         verified=True
     )
@@ -28,6 +34,7 @@ def user():
 def user2():
     user = AppUser.objects.create(
         username='admin1',
+        email='admin@gmail.com',
         is_active=True,
         verified=True
     )
@@ -39,6 +46,11 @@ def user2():
 def token(client, user):
     response = client.post('http://localhost:8000/login/',{'username': user.username, "password": "admin"})
     return response.json()['access']
+
+@pytest.fixture
+def refresh(client, user):
+    response = client.post('http://localhost:8000/login/',{'username': user.username, "password": "admin"})
+    return response.json()['refresh']
 
 # Hall Related
 @pytest.fixture

@@ -14,6 +14,7 @@ class AppUserRegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'password', 'first_name', 'last_name', 'email', 'profile_picture', 'role']
         extra_kwargs = {
             'password': {'write_only': True},
+            'email': {'required': True},
         }
 
     def create(self, validated_data):

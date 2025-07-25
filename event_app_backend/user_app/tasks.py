@@ -4,8 +4,11 @@ from celery import shared_task
 from django.core.mail import send_mail
 import os
 
+from user_app.models import AppUser
+
+
 @shared_task
-def send_otp_email(otp, email, link):
+def send_otp_email(otp, email, link, user_id):
     send_mail(subject='One Time Password', message=f'Your otp is {otp}', from_email=os.getenv("EMAIL_ADDRESS"), html_message=f"""
 <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Segoe UI', Roboto, sans-serif;">
   <tr>
@@ -66,4 +69,12 @@ def send_otp_email(otp, email, link):
 </table>
 """
 , recipient_list=[email])
+    expire_otp.apply_async(args=[user_id], countdown=60)
     return None
+
+@shared_task
+def expire_otp(user_id):
+    user = AppUser.objects.get(id=user_id)
+    time.sleep(60)
+    user.otp = ""
+    user.save()

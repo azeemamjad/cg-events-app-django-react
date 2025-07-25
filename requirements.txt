@@ -25,3 +25,6 @@ djangorestframework~=3.16.0
 
 celery
 django-filter
+
+pytest
+pytest-django

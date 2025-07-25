@@ -4,7 +4,7 @@ from rest_framework import routers
 
 
 router = routers.DefaultRouter()
-router.register(r'hall', HallViewSet)
+router.register(r'hall', HallViewSet, basename='hall')
 router.register(r'event', EventViewSet)
 
 urlpatterns = [

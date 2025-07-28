@@ -8,7 +8,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'rating','event']
 
     def validate_event(self, event):
-        user = self.initial_data.get("user")
+        user = self.context['request'].user
         review_by_user_in_that_event = Review.objects.filter(user=user, event=event).first()
         if review_by_user_in_that_event and not self.instance:
             raise ValidationError("You Can't Review a Single Event Twice!")

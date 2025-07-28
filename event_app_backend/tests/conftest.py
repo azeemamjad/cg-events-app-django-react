@@ -2,10 +2,13 @@ import pytest
 from django.template.defaultfilters import title
 from rest_framework.test import APIClient
 
+from reviews.models import Review
 from user_app.models import AppUser
 
 from event_management_app.models import Hall
 from event_management_app.models import Event
+
+from booking.models import Booking
 from django.core.cache import cache
 
 @pytest.fixture(autouse=True) # For Testing Throttling, and it would not impact on the other test case, cause the throttling info is stored in in-memory ( redux, in-memory:sqlite)
@@ -88,3 +91,40 @@ def event(hall, user):
     event_object.organizers.set([user])
     event_object.save()
     return event_object
+
+@pytest.fixture
+def event_2(user, hall2):
+    event_object = Event.objects.create(
+        title="Little Sports Gala",
+        description="Hello This is Special One!",
+        genre='Sports',
+        entry_fee=1200,
+        hall=hall2,
+    )
+    event_object.organizers.set([user])
+    event_object.save()
+    return event_object
+
+# Booking Related
+@pytest.fixture
+def booking(event, user):
+    booking_object = Booking.objects.create(
+        event=event,
+        user=user,
+        seat_no=1
+    )
+    booking_object.save()
+    return booking_object
+
+# Review
+@pytest.fixture
+def review(user, event, booking):
+    review_object = Review.objects.create(
+        title = "New Review",
+        description = "Nothing Special Here",
+        rating = 3,
+        event = event,
+        user_id=user.id
+    )
+    review_object.save()
+    return review_object

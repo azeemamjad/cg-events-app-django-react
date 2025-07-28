@@ -134,6 +134,7 @@ class EventViewSet(ModelViewSet):
         """Override to clear cache after creation"""
         organizer_list = [self.request.user]
         user_ids = self.request.data.get("organizers", [])
+        user_ids = user_ids.split(',')
         if user_ids:
             additional_users = AppUser.objects.filter(id__in=user_ids)
             organizer_list.extend(additional_users)

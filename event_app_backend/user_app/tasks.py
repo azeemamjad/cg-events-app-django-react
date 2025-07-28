@@ -75,6 +75,5 @@ def send_otp_email(otp, email, link, user_id):
 @shared_task
 def expire_otp(user_id):
     user = AppUser.objects.get(id=user_id)
-    time.sleep(60)
     user.otp = ""
     user.save()

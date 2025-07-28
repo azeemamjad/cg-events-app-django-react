@@ -40,7 +40,7 @@ class AppUserUpdateSerializer(serializers.ModelSerializer):
             return instance
 
 class AppUserVerifySerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
+    email = serializers.CharField(required=True)
     otp = serializers.CharField(required=False)
     class Meta:
         fields = ['email', 'otp']

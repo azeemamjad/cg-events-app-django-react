@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 import random
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 
 from .tasks import send_otp_email
 
@@ -46,7 +47,7 @@ class AppUserVerifyView(APIView):
         if serializer.is_valid():
             if serializer.data.get('otp', ''):
                 otp = serializer.data.get('otp')
-                user = get_object_or_404(AppUser, email=serializer.data.get("email"))
+                user = AppUser.objects.filter(Q(username=serializer.data.get("email")) | Q(email=serializer.data.get("email"))).first()
                 if user.otp == otp:
                     user.verified = True
                     user.otp = ''
@@ -58,11 +59,12 @@ class AppUserVerifyView(APIView):
                 otp = [str(random.choice([i for i in range(0, 10)])) for i in range(6)]
                 otp = "".join(otp)
                 email = serializer.data.get("email")
-                user = get_object_or_404(AppUser, email=email)
-                user.otp = otp
-                send_otp_email.delay(otp=otp, email=email, link=f"http://{request.get_host()}/api/user/verify/?email={email}&otp={otp}", user_id=user.id)
-                user.save()
-                return Response({"message": f"OTP sent Successfully! to {email}"}, status=status.HTTP_200_OK)
+                user = AppUser.objects.filter(Q(username=email) | Q(email=email)).first()
+                if user:
+                    user.otp = otp
+                    send_otp_email.delay(otp=otp, email=user.email, link=f"http://{request.get_host()}/api/user/verify/?email={email}&otp={otp}", user_id=user.id)
+                    user.save()
+                    return Response({"message": f"OTP sent Successfully! to {email}"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, *args, **kwargs):

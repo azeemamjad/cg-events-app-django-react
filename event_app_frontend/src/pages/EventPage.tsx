@@ -26,7 +26,7 @@ const EventPage = () => {
 
     return (
         <div className="min-h-screen flex flex-col">
-            <NormalHeader page_name="Events" />
+            <NormalHeader page_name="Upcoming Events" />
             <div className="w-screen px-4 flex-grow bg-gray-100">
                 <h1 className="pt-10 text-4xl font-bold text-blue-400 text-center">
                     Welcome to Events Page

@@ -98,7 +98,7 @@ const NormalHeader: React.FC<NormalHeaderProps> = ({ page_name = "Dashboard" }) 
                     <div className="flex gap-5">
                         <a href='/events' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Upcoming Events</a>
                         <a href='/events/past' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Past Events</a>
-                        <a className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">My Booking</a>
+                        <a href='/booking' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">My Bookings</a>
                         <a className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Recommendations</a>
                     </div>
                     

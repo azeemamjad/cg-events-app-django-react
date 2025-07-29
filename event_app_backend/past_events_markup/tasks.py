@@ -8,4 +8,7 @@ def event_markup():
     for past_event in past_events:
         past_event.past_event = True
         past_event.save()
+        past_bookings = past_events.bookings.all()
+        for booking in past_bookings:
+            booking.delete()
     return "Events Marked As Past Events"

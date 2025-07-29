@@ -79,3 +79,9 @@ def expire_otp(user_id):
         user.otp = ""
         user.save()
 
+@shared_task
+def delete_unverified_user(email):
+    user = AppUser.objects.filter(email=email, verified=False).first()
+    if user:
+        user.delete()
+    return None

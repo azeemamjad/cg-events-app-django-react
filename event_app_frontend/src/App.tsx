@@ -5,7 +5,8 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import VerifyOtp from './pages/VerifyOtp'
 
-import Dashboard from './pages/Dashboard'
+import BrokerDashboard from './pages/BrokerDashboard'
+import NormalDashboard from './pages/NormalDashboard'
 
 function App() {
 
@@ -17,7 +18,10 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/verify" element={<VerifyOtp />} />
 
-            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/broker-dashboard' element={<BrokerDashboard />} />
+
+
+            <Route path='/normal-dashboard' element={<NormalDashboard />} />
       </Routes>
     </>
   )

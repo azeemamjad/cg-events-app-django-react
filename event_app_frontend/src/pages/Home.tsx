@@ -60,7 +60,7 @@ const Home: React.FC = () => {
           </div>
         ) : (
           <div>
-            <Link to="/dashboard">
+            <Link to="/broker-dashboard">
               <button className="bg-purple-500 text-white px-6 py-4 rounded hover:bg-purple-600 transition cursor-pointer">
                 Go to Dashboard
               </button>

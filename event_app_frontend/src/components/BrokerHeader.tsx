@@ -13,7 +13,7 @@ interface HeaderProps {
   username: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ username }) => {
+const BrokerHeader: React.FC<HeaderProps> = ({ username }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -47,4 +47,4 @@ const Header: React.FC<HeaderProps> = ({ username }) => {
   );
 };
 
-export default Header;
+export default BrokerHeader;

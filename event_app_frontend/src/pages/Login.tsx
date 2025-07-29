@@ -18,8 +18,15 @@ const Login: React.FC = () => {
 
       const user = await getMe();
       localStorage.setItem("user", JSON.stringify(user));
-
-      navigate("/dashboard");
+      if (user.role == 'broker')
+      {
+        navigate("/broker-dashboard");
+      }
+      else
+      {
+        navigate('/normal-dashboard')
+      }
+    
     } catch (err: any) {
       const errorMsg = err.response?.data?.detail;
 

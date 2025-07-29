@@ -8,6 +8,9 @@ import VerifyOtp from './pages/VerifyOtp'
 import BrokerDashboard from './pages/BrokerDashboard'
 import NormalDashboard from './pages/NormalDashboard'
 
+import EventPage from './pages/EventPage'
+import PastEventPage from './pages/PastEventPage'
+
 function App() {
 
   return (
@@ -22,6 +25,8 @@ function App() {
 
 
             <Route path='/normal-dashboard' element={<NormalDashboard />} />
+            <Route path='/events' element={<EventPage />} />
+            <Route path='/events/past' element={<PastEventPage />} />
       </Routes>
     </>
   )

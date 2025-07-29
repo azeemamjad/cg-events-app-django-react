@@ -80,12 +80,20 @@ class EventListSerializer(serializers.ModelSerializer):
     remaining_bookings = serializers.SerializerMethodField()
     class Meta:
         model =Event
-        fields = ['id', 'title', 'description', 'entry_fee', 'genre', 'remaining_bookings','hall', 'start_time', 'end_time', 'created_at', 'updated_at']
+        fields = ['id', 'images', 'title', 'description', 'genre', 'remaining_bookings','hall', 'start_time', 'end_time', 'created_at', 'updated_at']
 
     def get_remaining_bookings(self, obj):
         count = obj.bookings.count()
-        remaining = obj.hall.capacity - count
-        return remaining
+        if not obj.hall:
+            return 0
+        if count:
+            remaining = obj.hall.capacity - count
+            return remaining
+        else:
+            return 0
+
+    def get_description(self, obj):
+        return obj.description[:20]
 
 class AppUserInlineSerializer(serializers.Serializer):
     id = serializers.IntegerField()

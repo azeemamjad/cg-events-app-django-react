@@ -3,7 +3,11 @@ import { logoutUser } from "../api/auth";
 import pic from "../assets/default-profile.jpg"
 import { useNavigate } from 'react-router-dom';
 
-const NormalHeader = () => {
+interface NormalHeaderProps {
+  page_name?: string;
+}
+
+const NormalHeader: React.FC<NormalHeaderProps> = ({ page_name = "Dashboard" }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -86,12 +90,14 @@ const NormalHeader = () => {
             <div className="flex h-20 justify-between items-center bg-gradient-to-r from-neutral-200 to-blue-200">
                 <h2 className="text-2xl ml-5 text-orange-500 font-medium cursor-pointer">
                     <a href="/">
-                        <span className="text-blue-600 font-black text-3xl">N</span>ormal Dashboard
+                        <span className="text-blue-600 font-black text-3xl">Cg</span> Events
                     </a>
                 </h2>
+                <h2 className='text-orange-400 font-bold text-3xl'>{page_name}</h2>
                 <div className="mr-7 flex gap-12 items-center">
                     <div className="flex gap-5">
-                        <a className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Events</a>
+                        <a href='/events' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Upcoming Events</a>
+                        <a href='/events/past' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Past Events</a>
                         <a className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">My Booking</a>
                         <a className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Recommendations</a>
                     </div>

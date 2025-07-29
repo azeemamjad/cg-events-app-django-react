@@ -54,6 +54,8 @@ class EventViewSet(ModelViewSet):
         return EventSerializer
 
     def get_queryset(self):
+        if self.request.GET.get("past"):
+            return Event.objects.filter(past_event=True).prefetch_related('organizers', 'bookings', 'images').order_by('-id')
         return Event.objects.filter(past_event=False).prefetch_related('organizers', 'bookings', 'images').order_by('-id')
 
     def _get_cache_key(self, request=None):

@@ -4,10 +4,20 @@ import Event from "../components/Event";
 import client from "../api/auth";
 import NormalFooter from "../components/NormalFooter";
 
+type EventType = {
+    id: number;
+    title: string;
+    description: string;
+    image: string;
+    start_time: string;
+    past: boolean;
+    // Add more fields if needed
+};
+
 const PastEventPage = () => {
-    const [events, setEvents] = useState([]);
-    const [nextPage, setNextPage] = useState(null);
-    const [prevPage, setPrevPage] = useState(null);
+    const [events, setEvents] = useState<EventType[]>([]);
+    const [nextPage, setNextPage] = useState<string | null>(null);
+    const [prevPage, setPrevPage] = useState<string | null>(null);
 
     const fetchEvents = async (url = 'api/event?past=true') => {
         try {
@@ -35,9 +45,12 @@ const PastEventPage = () => {
                     {events.map((event) => (
                         <Event
                             key={event.id}
+                            id={event.id}
                             title={event.title}
                             description={event.description}
                             image={event.image}
+                            start_time={event.start_time}
+                            past={event.past}
                         />
                     ))}
                 </div>
@@ -61,7 +74,7 @@ const PastEventPage = () => {
                     )}
                 </div>
             </div>
-            <NormalFooter></NormalFooter>
+            <NormalFooter />
         </div>
     );
 };

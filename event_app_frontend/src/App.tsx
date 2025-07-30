@@ -10,7 +10,10 @@ import NormalDashboard from './pages/NormalDashboard'
 
 import EventPage from './pages/EventPage'
 import PastEventPage from './pages/PastEventPage'
-import BookingPage from './pages/BookingPage'
+import BookingManagementPage from './pages/BookingManagementPage'
+import RecommendationsPage from './pages/RecommendationsPage'
+import EventDetails from './pages/EventDetailPage'
+import EventBookingPage from './pages/Booking'
 
 function App() {
 
@@ -28,7 +31,10 @@ function App() {
             <Route path='/normal-dashboard' element={<NormalDashboard />} />
             <Route path='/events' element={<EventPage />} />
             <Route path='/events/past' element={<PastEventPage />} />
-            <Route path='/booking' element={<BookingPage />} />
+            <Route path='/booking' element={<BookingManagementPage />} />
+            <Route path='/recommend' element={<RecommendationsPage />} />
+            <Route path="/events/:id" element={<EventDetails />} />
+            <Route path='/booking/:id' element={<EventBookingPage />}></Route>
       </Routes>
     </>
   )

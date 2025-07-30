@@ -12,19 +12,13 @@ type EventType = {
     start_time: string;
     // Add more fields if needed
 };
-
-
-const EventPage = () => {
+const RecommendationsPage = () => {
     const [events, setEvents] = useState<EventType[]>([]);
-    const [nextPage, setNextPage] = useState(null);
-    const [prevPage, setPrevPage] = useState(null);
 
-    const fetchEvents = async (url = 'api/event') => {
+    const fetchEvents = async (url = 'api/event/recommend') => {
         try {
             const response = await client.get(url);
-            setEvents(response.data.results);
-            setNextPage(response.data.next);
-            setPrevPage(response.data.previous);
+            setEvents(response.data);
         } catch (error) {
             console.error('Error fetching events:', error);
         }
@@ -39,8 +33,12 @@ const EventPage = () => {
             <NormalHeader page_name="Upcoming Events" />
             <div className="w-screen px-4 flex-grow bg-gray-100">
                 <h1 className="pt-10 text-4xl font-bold text-blue-400 text-center">
-                    Welcome to Events Page
+                    Welcome to Events Recommendations
                 </h1>
+                <p className="text-center mt-5 text-neutral-500">
+                    Here are the events listed that matches to your preferences... <br />
+                    On the basis of Genre and Halls...
+                </p>
                 <div className="flex flex-wrap justify-center gap-4 pt-10 px-10">
                     {events.map((event) => (
                         <Event
@@ -53,29 +51,10 @@ const EventPage = () => {
                         />
                     ))}
                 </div>
-
-                <div className="flex justify-center mt-6 gap-4">
-                    {prevPage && (
-                        <button
-                            onClick={() => fetchEvents(prevPage)}
-                            className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-                        >
-                            Previous
-                        </button>
-                    )}
-                    {nextPage && (
-                        <button
-                            onClick={() => fetchEvents(nextPage)}
-                            className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500"
-                        >
-                            Next
-                        </button>
-                    )}
-                </div>
             </div>
             <NormalFooter></NormalFooter>
         </div>
     );
 };
 
-export default EventPage;
+export default RecommendationsPage;

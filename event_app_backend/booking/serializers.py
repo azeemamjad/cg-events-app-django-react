@@ -4,6 +4,7 @@ from rest_framework.exceptions import ValidationError
 from event_management_app.models import Event
 from user_app.models import AppUser
 from .models import Booking
+from django.utils import timezone
 
 class BookingSerializer(serializers.ModelSerializer):
     event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=True)
@@ -36,9 +37,13 @@ class BookingSerializer(serializers.ModelSerializer):
 class BookingListSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
     event_title = serializers.SerializerMethodField()
+    past = serializers.SerializerMethodField()
     class Meta:
         model = Booking
-        fields = ['id', 'username', 'event_title', 'seat_no']
+        fields = ['id', 'username', 'event_title', 'seat_no', 'past']
+
+    def get_past(self, obj):
+        return obj.event.end_time < timezone.now()
 
     def get_username(self, obj):
         return obj.user.username

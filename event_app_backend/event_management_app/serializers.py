@@ -78,9 +78,13 @@ class EventSerializer(serializers.ModelSerializer):
 
 class EventListSerializer(serializers.ModelSerializer):
     remaining_bookings = serializers.SerializerMethodField()
+    past = serializers.SerializerMethodField()
     class Meta:
         model =Event
-        fields = ['id', 'images', 'title', 'description', 'genre', 'remaining_bookings','hall', 'start_time', 'end_time', 'created_at', 'updated_at']
+        fields = ['id', 'images', 'title', 'description', 'genre', 'remaining_bookings','hall', 'start_time', 'end_time', 'created_at', 'updated_at', 'past']
+
+    def get_past(self, obj):
+        return obj.end_time < timezone.now()
 
     def get_remaining_bookings(self, obj):
         count = obj.bookings.count()
@@ -112,12 +116,20 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     bookings = BookingInlineSerializer(many=True, read_only=True)
     images = EventImageSerializer(many=True, read_only=True)
     remaining_seats = serializers.SerializerMethodField(read_only=True)
+    occupied_seats = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'entry_fee', 'genre', 'remaining_seats', 'hall', 'start_time', 'end_time', 'created_at', 'updated_at', 'organizers', 'bookings', 'images']
+        fields = ['id', 'title', 'description', 'entry_fee', 'genre', 'remaining_seats', 'hall', 'start_time', 'end_time', 'created_at', 'updated_at', 'organizers', 'bookings', 'images', 'occupied_seats']
 
     def get_remaining_seats(self, obj):
         total_bookings = obj.bookings.count()
         if obj.hall and obj.hall.capacity is not None:
             return max(obj.hall.capacity - total_bookings, 0)
         return None
+
+    def get_occupied_seats(self, obj):
+        occ = []
+        total_bookings = obj.bookings.all()
+        for booking in total_bookings:
+            occ.append(booking.seat_no)
+        return occ

@@ -12,7 +12,7 @@ const BookingRow: React.FC<BookingProps> = ({
   id = "ID",
   event_title = "Event Title",
   seat_no = "Seat No",
-  action = "Action",
+  action = "Details",
   head = false,
 }) => {
   if (head) {

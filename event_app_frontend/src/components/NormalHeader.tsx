@@ -100,6 +100,7 @@ const NormalHeader: React.FC<NormalHeaderProps> = ({ page_name = "Dashboard" }) 
                         <a href='/events/past' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Past Events</a>
                         <a href='/booking' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">My Bookings</a>
                         <a href='/recommend' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Recommendations</a>
+                        <a href='/halls' className="cursor-pointer text-blue-600 hover:text-blue-800 shadow-2xs hover:shadow-lg shadow-blue-400 transition-all duration-200">Halls</a>
                     </div>
                     
                     {/* User Dropdown */}

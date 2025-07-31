@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { Calendar, Clock, MapPin, Users, DollarSign, Star, Mail, User, Check, X, Loader, AlertTriangle, Trash2, Eye } from "lucide-react";
+import NormalHeader from "../components/NormalHeader";
+import NormalFooter from "../components/NormalFooter";
+import client from "../api/auth";
 
 type Hall = {
   id: number;
@@ -111,13 +114,38 @@ const BookingManagementPage = () => {
   ];
 
   useEffect(() => {
-    // Simulate API call to fetch user's bookings
-    setTimeout(() => {
-      setBookings(mockBookings);
-      setLoading(false);
-      setTimeout(() => setIsVisible(true), 100);
-    }, 1000);
-  }, []);
+  // Simulate API call to fetch user's bookings
+  setTimeout(async () => {
+    const mybooking_details: any[] = [];
+
+    try {
+      let nextUrl: string | null = 'api/booking/';
+
+      // Fetch all paginated bookings
+      while (nextUrl) {
+        const response = await client.get(nextUrl);
+        const data = response.data;
+        nextUrl = data.next;
+
+        const bookingResults = data.results;
+
+        for (const booking of bookingResults) {
+          const bookingDetail = await client.get(`api/booking/${booking.id}/`);
+          mybooking_details.push(bookingDetail.data);
+        }
+      }
+
+      console.log(mybooking_details);
+      setBookings(mybooking_details);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+    }
+
+    setLoading(false);
+    setTimeout(() => setIsVisible(true), 100);
+  }, 1000);
+}, []);
+
 
   const handleCancelBooking = async (bookingId: number) => {
     setCancellingBooking(bookingId);
@@ -125,13 +153,20 @@ const BookingManagementPage = () => {
     
     try {
       // Simulate API call: await client.delete(`/api/booking/${bookingId}/`);
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      const res = await client.delete(`api/booking/${bookingId}`)
+      const status = res.status
       // Remove booking from list
-      setBookings(prev => prev.filter(booking => booking.id !== bookingId));
-      setCancelSuccess(bookingId);
-      
-      setTimeout(() => setCancelSuccess(null), 3000);
+      if (status == 204)
+      {
+        setBookings(prev => prev.filter(booking => booking.id !== bookingId));
+        setCancelSuccess(bookingId);
+        
+        setTimeout(() => setCancelSuccess(null), 3000);
+      }
+      else
+      {
+        alert(res.data)
+      }
     } catch (error) {
       console.error('Failed to cancel booking:', error);
     } finally {
@@ -155,31 +190,26 @@ const BookingManagementPage = () => {
 
   if (loading) {
     return (
+      <>
+      <NormalHeader page_name="My Bookings" />
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
           <div className="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-700 text-xl font-medium">Loading your bookings...</p>
         </div>
       </div>
+      <NormalFooter></NormalFooter>
+      </>
     );
   }
 
   const groupedBookings = groupBookingsByEvent(bookings);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <div className="flex h-20 justify-between items-center bg-gradient-to-r from-neutral-200 to-blue-200">
-        <h2 className="text-2xl ml-5 text-orange-500 font-medium cursor-pointer">
-          <a href="/">
-            <span className="text-blue-600 font-black text-3xl">Cg</span> Events
-          </a>
-        </h2>
-        <h2 className='text-orange-400 font-bold text-3xl'>My Bookings</h2>
-        <div className="mr-7 w-32"></div>
-      </div>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <NormalHeader page_name="My Bookings" />
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 flex-grow">
         {/* Page Header */}
         <div className={`bg-white rounded-3xl p-8 shadow-xl border border-gray-200 mb-8 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <div className="flex items-center justify-between">
@@ -274,22 +304,22 @@ const BookingManagementPage = () => {
 
                         <div className="flex items-center gap-3">
                           <button
-                            onClick={() => window.open(`/event/${booking.event.id}`, '_blank')}
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-all duration-300"
+                            onClick={() => window.open(`/events/${booking.event.id}`, '_blank')}
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-all duration-300 cursor-pointer"
                           >
                             <Eye className="w-4 h-4" />
                             View Event
                           </button>
                           
                           {cancellingBooking === booking.id ? (
-                            <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-full">
+                            <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-full cursor-progress">
                               <Loader className="w-4 h-4 animate-spin" />
                               Cancelling...
                             </div>
                           ) : (
                             <button
                               onClick={() => setShowCancelConfirm(booking.id)}
-                              className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-full hover:bg-red-200 transition-all duration-300"
+                              className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-full hover:bg-red-200 transition-all duration-300 cursor-pointer"
                             >
                               <Trash2 className="w-4 h-4" />
                               Cancel
@@ -333,13 +363,13 @@ const BookingManagementPage = () => {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setShowCancelConfirm(null)}
-                    className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-full font-semibold hover:bg-gray-300 transition-all duration-300"
+                    className="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-full font-semibold hover:bg-gray-300 transition-all duration-300 cursor-pointer"
                   >
                     Keep Booking
                   </button>
                   <button
                     onClick={() => handleCancelBooking(showCancelConfirm)}
-                    className="flex-1 px-6 py-3 bg-red-600 text-white rounded-full font-semibold hover:bg-red-700 transition-all duration-300"
+                    className="flex-1 px-6 py-3 bg-red-600 text-white rounded-full font-semibold hover:bg-red-700 transition-all duration-300 cursor-pointer"
                   >
                     Yes, Cancel
                   </button>
@@ -351,9 +381,7 @@ const BookingManagementPage = () => {
       </div>
 
       {/* Footer */}
-      <div className="bg-gradient-to-r from-neutral-200 to-blue-200 border-t border-gray-200 p-8 text-center mt-12">
-        <p className="text-gray-600">© 2025 <span className="text-blue-600 font-bold">Cg</span> <span className="text-orange-500">Events</span>. All rights reserved.</p>
-      </div>
+      <NormalFooter />
     </div>
   );
 };

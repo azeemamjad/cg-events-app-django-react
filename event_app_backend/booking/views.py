@@ -24,7 +24,7 @@ class BookingViewSet(ModelViewSet):
     filterset_class = BookingFilterSet
 
     def get_queryset(self):
-        return Booking.objects.filter(user=self.request.user).prefetch_related('user', 'event').order_by('id')
+        return Booking.objects.filter(user=self.request.user, event__past_event=False).select_related('user', 'event').order_by('id')
     def get_serializer_class(self):
         if self.action == 'list':
             return BookingListSerializer

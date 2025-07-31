@@ -54,6 +54,7 @@ const EventBookingPage = () => {
   const [bookingInProgress, setBookingInProgress] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [capacity, setCapacity] = useState(0);
 
   // Mock event data
   const mockEvent: EventData = {
@@ -107,6 +108,32 @@ const EventBookingPage = () => {
     }, 1000);
   }, []);
 
+    useEffect(() => {
+    // 1) Don’t run until you actually have an event object
+    if (!event) return;
+
+    // 2) (Optional) simulate a delay
+    const timer = setTimeout(() => {
+      (async () => {
+        try {
+          // 3) Use the correct hall id, not event.id
+          const { data: hallData } = await client.get<{ capacity: number }>(
+            `api/hall/${event.hall}/`
+          );
+          setCapacity(hallData.capacity);
+        } catch (err) {
+          console.error("Failed to load hall:", err);
+        } finally {
+          setLoading(false);
+          setTimeout(() => setIsVisible(true), 100);
+        }
+      })();
+    }, 1000);
+
+    // 4) Cleanup in case `event` changes before timer fires
+    return () => clearTimeout(timer);
+  }, [event]);  // ← run this effect whenever `event` updates
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       weekday: 'long',
@@ -121,8 +148,9 @@ const EventBookingPage = () => {
   // Generate seats (assuming 10 rows with 30 seats each = 300 total seats)
   const generateSeats = () => {
     const seats = [];
-    const totalSeats = 700; // Based on remaining_seats + occupied
-    const seatsPerRow = 30;
+
+    const totalSeats = capacity; // Based on remaining_seats + occupied
+    const seatsPerRow = capacity > 200? 30 : capacity > 100? 10: 20;
     const rows = Math.ceil(totalSeats / seatsPerRow);
 
     for (let row = 1; row <= rows; row++) {
@@ -185,12 +213,16 @@ const EventBookingPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-700 text-xl font-medium">Loading booking page...</p>
+      <>
+      <NormalHeader page_name="Booking" />
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+          <div className="text-center">
+            <div className="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-700 text-xl font-medium">Loading booking page...</p>
+          </div>
         </div>
-      </div>
+        <NormalFooter />
+      </>
     );
   }
 

@@ -9,9 +9,4 @@ def event_markup():
     for past_event in past_events:
         past_event.past_event = True
         past_event.save()
-        # Access the related bookings of a single event instance
-        if past_event.bookings.exists():
-            past_bookings = past_event.bookings.all()
-            for booking in past_bookings:
-                booking.delete()
     return "Events Marked As Past Events"

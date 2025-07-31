@@ -78,23 +78,31 @@ const EventDetails = () => {
 
   if (loading) {
     return (
+      <>
+      <NormalHeader page_name="Event Details" />
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
           <div className="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-700 text-xl font-medium">Loading your event...</p>
         </div>
       </div>
+      <NormalFooter></NormalFooter>
+      </>
     );
   }
 
   if (!event) {
     return (
+      <>
+      <NormalHeader page_name="Event Details" />
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center bg-white rounded-3xl p-12 shadow-xl border border-gray-200">
           <h2 className="text-gray-800 text-3xl font-bold mb-4">Event Not Found</h2>
           <p className="text-gray-600">The event you're looking for doesn't exist.</p>
         </div>
       </div>
+      <NormalFooter></NormalFooter>
+      </>
     );
   }
 

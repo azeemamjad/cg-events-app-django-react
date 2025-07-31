@@ -14,6 +14,8 @@ import BookingManagementPage from './pages/BookingManagementPage'
 import RecommendationsPage from './pages/RecommendationsPage'
 import EventDetails from './pages/EventDetailPage'
 import EventBookingPage from './pages/Booking'
+import HallsListingPage from './pages/Halls'
+import HallDetailPage from './pages/HallDetailPage'
 
 function App() {
 
@@ -35,6 +37,8 @@ function App() {
             <Route path='/recommend' element={<RecommendationsPage />} />
             <Route path="/events/:id" element={<EventDetails />} />
             <Route path='/booking/:id' element={<EventBookingPage />}></Route>
+            <Route path='/halls' element={<HallsListingPage />} />
+            <Route path='/halls/:id' element={<HallDetailPage />} />
       </Routes>
     </>
   )

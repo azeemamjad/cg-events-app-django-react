@@ -2,6 +2,7 @@ from celery import shared_task
 from event_management_app.models import Event
 from django.utils import timezone
 
+
 @shared_task
 def event_markup():
     past_events = Event.objects.filter(end_time__lt=timezone.now())

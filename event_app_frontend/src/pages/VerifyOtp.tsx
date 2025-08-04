@@ -23,7 +23,19 @@ const VerifyOtp: React.FC = () => {
     try {
       if (!email) throw new Error("Email missing in URL");
       await verifyOtpApi({ email, otp });
-      navigate("/dashboard");
+      if (typeof localStorage !== "undefined") {
+          const user = localStorage.getItem('user');
+          const parsedUser = user ? JSON.parse(user) : null;
+          if (parsedUser.role=='broker')
+          {
+            navigate("/broker-dashboard");
+          }
+          else
+          {
+            navigate("/normal-dashboard");
+          }
+      }
+      
     } catch (err) {
       alert("OTP verification failed.");
       console.error(err);

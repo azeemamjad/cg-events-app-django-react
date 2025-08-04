@@ -1,3 +1,4 @@
+from django.contrib.admin import action
 from django.template.context_processors import request
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -54,6 +55,10 @@ class EventViewSet(ModelViewSet):
         return EventSerializer
 
     def get_queryset(self):
+        if self.action == 'retrieve':
+            return Event.objects.all().prefetch_related('organizers', 'bookings', 'images').order_by('-id')
+        if self.request.GET.get("past"):
+            return Event.objects.filter(past_event=True).prefetch_related('organizers', 'bookings', 'images').order_by('-id')
         return Event.objects.filter(past_event=False).prefetch_related('organizers', 'bookings', 'images').order_by('-id')
 
     def _get_cache_key(self, request=None):

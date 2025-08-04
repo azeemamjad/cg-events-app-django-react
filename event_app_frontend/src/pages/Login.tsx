@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import bgImage from "../assets/bg.jpg";
-
 import { loginUser as LoginWithApi, getMe } from "../api/auth";
 
 const Login: React.FC = () => {
@@ -11,19 +10,33 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const tokens = await LoginWithApi({ username, password });
+
       localStorage.setItem("accessToken", tokens.access);
       localStorage.setItem("refreshToken", tokens.refresh);
 
-      // Fetch user info
       const user = await getMe();
       localStorage.setItem("user", JSON.stringify(user));
+      if (user.role == 'broker')
+      {
+        navigate("/broker-dashboard");
+      }
+      else
+      {
+        navigate('/normal-dashboard')
+      }
+    
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.detail;
 
-      navigate("/");
-    } catch (err) {
-      alert("Invalid username or password");
+      if (errorMsg === "Account is not verified.") {
+        navigate(`/verify?email=${encodeURIComponent(username)}`);
+      } else {
+        alert(errorMsg || "Login failed. Please check your credentials.");
+      }
+
+      console.error("Login error:", err);
     }
   };
 
@@ -68,7 +81,7 @@ const Login: React.FC = () => {
         </button>
 
         <p className="text-sm text-center mt-2 text-gray-400">
-          Don't have account?{" "}
+          Don’t have an account?{" "}
           <Link
             to="/signup"
             className="underline text-blue-400 hover:text-green-300 transition"

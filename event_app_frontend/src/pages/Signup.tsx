@@ -3,41 +3,41 @@ import { useNavigate, Link } from "react-router-dom";
 import bgImage from "../assets/bg.jpg";
 import defaultProfile from "../assets/default-profile.jpg";
 
-import { registerUser as registerUserApi } from "../api/auth";
+import { registerUser as registerUserApi,type RegisterPayload } from "../api/auth";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
 
   const [profileImage, setProfileImage] = useState<string>(defaultProfile);
   const [imageSelected, setImageSelected] = useState(false);
-  const [form, setForm] = useState({
-    profilePicture: "",
-    username: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [form, setForm] = 
+    useState<RegisterPayload>({
+          profile_picture: null,
+          username: "",
+          email: "",
+          first_name: "",
+          last_name: "",
+          password: "",
+          confirm_password: "",
+          role: "normal"
+        });
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-        setForm({ ...form, profilePicture: reader.result as string });
-        setImageSelected(true);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const file = e.target.files?.[0];
+  if (file) {
+    setProfileImage(URL.createObjectURL(file)); // for preview
+    setForm({ ...form, profile_picture: file }); // store actual File for backend
+    setImageSelected(true);
+  }
+};
+
 
     const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-        const { username, email, password } = form;
-        await registerUserApi({ username, email, password });
+        const { username, email, password, first_name, last_name, confirm_password, profile_picture, role } = form;
+        await registerUserApi({ username, email, password, first_name, last_name, confirm_password, profile_picture, role });
         navigate(`/verify?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
         if (err.response?.data) {
@@ -93,12 +93,21 @@ const Signup: React.FC = () => {
         {/* Input Fields */}
         <input type="text" placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="w-full px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
         <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
+        <select
+          value={form.role}
+          onChange={(e) => setForm({ ...form, role: e.target.value })}
+          className="w-full px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300"
+        >
+          <option value="normal">Normal</option>
+          <option value="broker">Broker</option>
+        </select>
+
         <div className="grid grid-cols-2 gap-4">
-          <input type="text" placeholder="First Name" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} className="px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
-          <input type="text" placeholder="Last Name" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} className="px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
+          <input type="text" placeholder="First Name" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} className="px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
+          <input type="text" placeholder="Last Name" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} className="px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
         </div>
         <input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
-        <input type="password" placeholder="Confirm Password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} className="w-full px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
+        <input type="password" placeholder="Confirm Password" value={form.confirm_password} onChange={(e) => setForm({ ...form, confirm_password: e.target.value })} className="w-full px-4 py-2 rounded bg-white bg-opacity-70 text-black border border-gray-300" required />
 
         <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded">Next</button>
 
